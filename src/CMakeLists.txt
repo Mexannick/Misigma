@@ -1,5 +1,7 @@
 add_executable(Misigma WIN32
     main.cpp
+    Game.cpp
+    Game.h
 )
 
 target_link_libraries(Misigma PRIVATE
