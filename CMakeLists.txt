@@ -18,4 +18,9 @@ endif()
 
 add_subdirectory(engine)
 
+target_include_directories(WickedEngine_common SYSTEM PUBLIC
+    "${CMAKE_SOURCE_DIR}/engine/WickedEngine/Utility/dx12"
+)
+
 add_subdirectory(src)
+
