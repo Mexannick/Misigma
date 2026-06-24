@@ -10,6 +10,7 @@ set(WICKED_TESTS OFF CACHE BOOL "" FORCE)
 set(WICKED_IMGUI_EXAMPLE OFF CACHE BOOL "" FORCE)
 set(WICKED_WINDOWS_TEMPLATE OFF CACHE BOOL "" FORCE)
 set(WICKED_LINUX_TEMPLATE OFF CACHE BOOL "" FORCE)
+set(WICKED_EMBED_SHADERS OFF CACHE BOOL "" FORCE)
 
 if(NOT EXISTS "${CMAKE_SOURCE_DIR}/engine/CMakeLists.txt")
     message(FATAL_ERROR "WickedEngine submodule not found.\nRun: git submodule update --init --recursive")
