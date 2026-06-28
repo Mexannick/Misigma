@@ -1,12 +1,12 @@
-#include "Game.h"
+#include "core/Application.h"
 
-Game game;
+MisigmaApp app;
 
 int APIENTRY wWinMain(
-    _In_ HINSTANCE hInstance,
+    _In_     HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
-    _In_ LPWSTR lpCmdLine,
-    _In_ int nCmdShow)
+    _In_     LPWSTR    lpCmdLine,
+    _In_     int       nCmdShow)
 {
     static auto WndProc = [](HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) -> LRESULT
     {
@@ -14,8 +14,8 @@ int APIENTRY wWinMain(
         {
         case WM_SIZE:
         case WM_DPICHANGED:
-            if (game.is_window_active)
-                game.SetWindow(hWnd);
+            if (app.is_window_active)
+                app.SetWindow(hWnd);
             break;
         case WM_CHAR:
             switch (wParam)
@@ -34,10 +34,10 @@ int APIENTRY wWinMain(
             wi::input::rawinput::ParseMessage((void*)lParam);
             break;
         case WM_KILLFOCUS:
-            game.is_window_active = false;
+            app.is_window_active = false;
             break;
         case WM_SETFOCUS:
-            game.is_window_active = true;
+            app.is_window_active = true;
             break;
         case WM_DESTROY:
             PostQuitMessage(0);
@@ -50,7 +50,7 @@ int APIENTRY wWinMain(
 
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
-    WNDCLASSEXW wcex = {};
+    WNDCLASSEXW wcex   = {};
     wcex.cbSize        = sizeof(WNDCLASSEX);
     wcex.style         = CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc   = WndProc;
@@ -67,7 +67,7 @@ int APIENTRY wWinMain(
         nullptr, nullptr, hInstance, nullptr);
     ShowWindow(hWnd, SW_SHOWDEFAULT);
 
-    game.SetWindow(hWnd);
+    app.SetWindow(hWnd);
     wi::arguments::Parse(lpCmdLine);
 
     MSG msg = {};
@@ -80,7 +80,7 @@ int APIENTRY wWinMain(
         }
         else
         {
-            game.Run();
+            app.Run();
         }
     }
 
