@@ -33,6 +33,9 @@ private:
 
     float skyTime = 0.0f;
 
+    wi::graphics::Shader marsGradeCS;
+    bool  postFxLoaded = false;
+
     static constexpr XMFLOAT3 kMonolithPos = XMFLOAT3(0.0f, 0.0f, 400.0f);
     static constexpr float kMaxDistance = 650.0f;
     static constexpr float kApproachDistance = 450.0f;
@@ -80,6 +83,9 @@ private:
     void SetupGround();
     void SpawnMonolith();
     void InitSilhouettes();
+
+    void SetupPostprocess();
+    void UpdatePostprocess();
 
     void UpdateSkyPulse(float dt);
     void CheckTeleportBoundary(float dt);

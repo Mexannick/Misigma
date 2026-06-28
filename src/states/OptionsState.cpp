@@ -2,6 +2,8 @@
 #include "states/GameplayState.h"
 #include "core/Application.h"
 
+#include <cmath>
+
 
 void OptionsState::Init(MisigmaApp* app, GameplayState* gp)
 {
@@ -18,14 +20,15 @@ void OptionsState::Load()
 
     
     btnBack.Create("BtnBack");
-    btnBack.SetText("< BACK");
+    btnBack.SetText("< НАЗАД");
     btnBack.SetSize(XMFLOAT2(160, 44));
-    btnBack.SetColor(wi::Color(45, 30, 80, 200),  wi::gui::IDLE);
-    btnBack.SetColor(wi::Color(80, 50, 140, 240),  wi::gui::FOCUS);
-    btnBack.SetColor(wi::Color(25, 10, 50, 255),   wi::gui::ACTIVE);
+    btnBack.SetColor(wi::Color(45, 6,  6, 200),  wi::gui::IDLE);
+    btnBack.SetColor(wi::Color(90, 12, 12, 240), wi::gui::FOCUS);
+    btnBack.SetColor(wi::Color(24, 2,  2, 255),  wi::gui::ACTIVE);
     btnBack.font.params.size = 18;
     btnBack.font.params.h_align = wi::font::WIFALIGN_CENTER;
     btnBack.font.params.v_align = wi::font::WIFALIGN_CENTER;
+    btnBack.font.params.color = wi::Color(200, 80, 80, 230);
     btnBack.OnClick([this](wi::gui::EventArgs)
     {
         if (owner) owner->GoToMainMenu(0.4f);
@@ -145,28 +148,36 @@ void OptionsState::ResizeLayout()
 
 void OptionsState::Compose(wi::graphics::CommandList cmd) const
 {
-    
-    {
-        wi::image::Params bg;
-        bg.enableFullScreen();
-        bg.color = XMFLOAT4(0.03f, 0.02f, 0.08f, 1.0f);
-        wi::image::Draw(nullptr, bg, cmd);
-    }
-
     float W = GetLogicalWidth();
     float H = GetLogicalHeight();
 
-    
     {
+        float pulse = 0.5f + 0.5f * std::sin(time * 0.5f);
+        wi::image::Params bg;
+        bg.enableFullScreen();
+        bg.color = XMFLOAT4(0.022f + 0.016f * pulse, 0.004f, 0.006f, 1.0f);
+        wi::image::Draw(nullptr, bg, cmd);
+    }
+
+    {
+        float pulse = 0.5f + 0.5f * std::sin(time * 0.7f);
         wi::image::Params glow;
-        float gw = W * 0.55f, gh = H * 0.75f;
-        glow.pos   = XMFLOAT3((W - gw) * 0.5f, H * 0.1f, 0.0f);
+        float gw = W * 0.55f, gh = H * 0.78f;
+        glow.pos   = XMFLOAT3((W - gw) * 0.5f, H * 0.08f, 0.0f);
         glow.siz   = XMFLOAT2(gw, gh);
-        glow.color = XMFLOAT4(0.15f, 0.04f, 0.40f, 0.14f);
+        glow.color = XMFLOAT4(0.30f + 0.08f * pulse, 0.02f, 0.01f, 0.10f);
         wi::image::Draw(nullptr, glow, cmd);
     }
 
-    
+    {
+        float pw = 440.0f, ph = H * 0.52f;
+        wi::image::Params panel;
+        panel.pos   = XMFLOAT3((W - pw) * 0.5f, H * 0.18f, 0.0f);
+        panel.siz   = XMFLOAT2(pw, ph);
+        panel.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.32f);
+        wi::image::Draw(nullptr, panel, cmd);
+    }
+
     {
         wi::font::Params fp;
         fp.posX    = W * 0.5f;
@@ -174,14 +185,13 @@ void OptionsState::Compose(wi::graphics::CommandList cmd) const
         fp.size    = 40;
         fp.h_align = wi::font::WIFALIGN_CENTER;
         fp.v_align = wi::font::WIFALIGN_CENTER;
-        fp.color   = wi::Color(200, 180, 255, 240);
-        fp.shadowColor    = wi::Color(80, 20, 180, 160);
+        fp.color   = wi::Color(210, 40, 30, 240);
+        fp.shadowColor    = wi::Color(70, 0, 0, 170);
         fp.shadow_offset_x = 3.0f;
         fp.shadow_offset_y = 3.0f;
-        wi::font::Draw("OPTIONS", fp, cmd);
+        wi::font::Draw("НАСТРОЙКИ", fp, cmd);
     }
 
-    
     auto drawSection = [&](const char* label, float y)
     {
         wi::font::Params sp;
@@ -190,14 +200,23 @@ void OptionsState::Compose(wi::graphics::CommandList cmd) const
         sp.size    = 13;
         sp.h_align = wi::font::WIFALIGN_LEFT;
         sp.v_align = wi::font::WIFALIGN_CENTER;
-        sp.color   = wi::Color(120, 100, 180, 200);
+        sp.color   = wi::Color(170, 70, 60, 210);
         wi::font::Draw(label, sp, cmd);
     };
 
-    drawSection("GRAPHICS", H * 0.17f);
-    drawSection("AUDIO",    H * 0.17f + 4 * 48.0f + 20.0f + 48.0f + 8.0f - 14.0f);
+    drawSection("ГРАФИКА", H * 0.17f);
+    drawSection("ЗВУК",    H * 0.17f + 4 * 48.0f + 20.0f + 48.0f + 8.0f - 14.0f);
 
-    
+    {
+        float vh = H * 0.14f;
+        wi::image::Params v;
+        v.pos = XMFLOAT3(0, 0, 0); v.siz = XMFLOAT2(W, vh);
+        v.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.6f);
+        wi::image::Draw(nullptr, v, cmd);
+        v.pos = XMFLOAT3(0, H - vh, 0);
+        wi::image::Draw(nullptr, v, cmd);
+    }
+
     {
         wi::font::Params ver;
         ver.posX    = W - 12.0f;
@@ -205,7 +224,7 @@ void OptionsState::Compose(wi::graphics::CommandList cmd) const
         ver.size    = 12;
         ver.h_align = wi::font::WIFALIGN_RIGHT;
         ver.v_align = wi::font::WIFALIGN_BOTTOM;
-        ver.color   = wi::Color(80, 70, 110, 140);
+        ver.color   = wi::Color(90, 20, 20, 140);
         wi::font::Draw("v0.1.0-dev", ver, cmd);
     }
 

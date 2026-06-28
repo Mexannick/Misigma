@@ -5,7 +5,9 @@ void MisigmaApp::Initialize()
 {
     wi::Application::Initialize();
 
-    
+    wi::renderer::SetShaderSourcePath(wi::helper::GetCurrentPath() + "/shaders/");
+
+
     loadingState  = std::make_unique<LoadingState>();
     mainMenuState = std::make_unique<MainMenuState>();
     gameplayState = std::make_unique<GameplayState>();

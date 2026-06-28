@@ -49,5 +49,8 @@ add_custom_command(TARGET Misigma POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/engine/Content"
         "$<TARGET_FILE_DIR:Misigma>/Content"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/game_shaders"
+        "$<TARGET_FILE_DIR:Misigma>/shaders"
     COMMENT "Copying dxcompiler.dll, shaders and content..."
 )

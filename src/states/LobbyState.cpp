@@ -1,6 +1,8 @@
 #include "states/LobbyState.h"
 #include "core/Application.h"
 
+#include <cmath>
+
 static constexpr float ROW_H = 46.0f;
 
 
@@ -77,14 +79,15 @@ void LobbyState::Load()
 
     
     btnBack.Create("LobbyBtnBack");
-    btnBack.SetText("< BACK");
+    btnBack.SetText("< НАЗАД");
     btnBack.SetSize(XMFLOAT2(160, 44));
-    btnBack.SetColor(wi::Color(45, 30, 80, 200),  wi::gui::IDLE);
-    btnBack.SetColor(wi::Color(80, 50, 140, 240),  wi::gui::FOCUS);
-    btnBack.SetColor(wi::Color(25, 10, 50, 255),   wi::gui::ACTIVE);
+    btnBack.SetColor(wi::Color(45, 6,  6, 200),  wi::gui::IDLE);
+    btnBack.SetColor(wi::Color(90, 12, 12, 240), wi::gui::FOCUS);
+    btnBack.SetColor(wi::Color(24, 2,  2, 255),  wi::gui::ACTIVE);
     btnBack.font.params.size = 18;
     btnBack.font.params.h_align = wi::font::WIFALIGN_CENTER;
     btnBack.font.params.v_align = wi::font::WIFALIGN_CENTER;
+    btnBack.font.params.color = wi::Color(200, 80, 80, 230);
     btnBack.OnClick([this](wi::gui::EventArgs)
     {
         net::NetManager::Get().Disconnect("Left lobby");
@@ -96,25 +99,26 @@ void LobbyState::Load()
     txtPlayerName.Create("TxtPlayerName");
     txtPlayerName.SetText("Player");
     txtPlayerName.SetSize(XMFLOAT2(220, 32));
-    txtPlayerName.SetDescription("Name: ");
+    txtPlayerName.SetDescription("Имя: ");
     gui.AddWidget(&txtPlayerName);
 
-    
+
     txtPort.Create("TxtPort");
     txtPort.SetText("7777");
     txtPort.SetSize(XMFLOAT2(120, 32));
-    txtPort.SetDescription("Port: ");
+    txtPort.SetDescription("Порт: ");
     gui.AddWidget(&txtPort);
 
     btnHost.Create("BtnHost");
-    btnHost.SetText("HOST");
+    btnHost.SetText("СОЗДАТЬ");
     btnHost.SetSize(XMFLOAT2(140, 44));
-    btnHost.SetColor(wi::Color(30, 90, 50, 220),  wi::gui::IDLE);
-    btnHost.SetColor(wi::Color(50, 140, 80, 255),  wi::gui::FOCUS);
-    btnHost.SetColor(wi::Color(15, 60, 30, 255),   wi::gui::ACTIVE);
+    btnHost.SetColor(wi::Color(70, 30, 8,  215), wi::gui::IDLE);
+    btnHost.SetColor(wi::Color(120, 55, 16, 245), wi::gui::FOCUS);
+    btnHost.SetColor(wi::Color(45, 18, 5,  255), wi::gui::ACTIVE);
     btnHost.font.params.size = 18;
     btnHost.font.params.h_align = wi::font::WIFALIGN_CENTER;
     btnHost.font.params.v_align = wi::font::WIFALIGN_CENTER;
+    btnHost.font.params.color = wi::Color(210, 140, 70, 230);
     btnHost.OnClick([this](wi::gui::EventArgs)
     {
         uint16_t port = static_cast<uint16_t>(std::stoi(txtPort.GetCurrentInputValue()));
@@ -136,18 +140,19 @@ void LobbyState::Load()
     txtJoinPort.Create("TxtJoinPort");
     txtJoinPort.SetText("7777");
     txtJoinPort.SetSize(XMFLOAT2(120, 32));
-    txtJoinPort.SetDescription("Port: ");
+    txtJoinPort.SetDescription("Порт: ");
     gui.AddWidget(&txtJoinPort);
 
     btnJoin.Create("BtnJoin");
-    btnJoin.SetText("JOIN");
+    btnJoin.SetText("ВОЙТИ");
     btnJoin.SetSize(XMFLOAT2(140, 44));
-    btnJoin.SetColor(wi::Color(30, 50, 120, 220),  wi::gui::IDLE);
-    btnJoin.SetColor(wi::Color(50, 80, 200, 255),   wi::gui::FOCUS);
-    btnJoin.SetColor(wi::Color(15, 30, 80, 255),    wi::gui::ACTIVE);
+    btnJoin.SetColor(wi::Color(60, 8,  8, 215), wi::gui::IDLE);
+    btnJoin.SetColor(wi::Color(110, 16, 16, 245), wi::gui::FOCUS);
+    btnJoin.SetColor(wi::Color(36, 3,  3, 255), wi::gui::ACTIVE);
     btnJoin.font.params.size = 18;
     btnJoin.font.params.h_align = wi::font::WIFALIGN_CENTER;
     btnJoin.font.params.v_align = wi::font::WIFALIGN_CENTER;
+    btnJoin.font.params.color = wi::Color(210, 90, 90, 230);
     btnJoin.OnClick([this](wi::gui::EventArgs)
     {
         std::string ipStr = txtIP.GetCurrentInputValue();
@@ -174,14 +179,15 @@ void LobbyState::Load()
 
     
     btnStartGame.Create("BtnStartGame");
-    btnStartGame.SetText("START GAME");
+    btnStartGame.SetText("НАЧАТЬ");
     btnStartGame.SetSize(XMFLOAT2(220, 52));
-    btnStartGame.SetColor(wi::Color(90, 30, 200, 220),  wi::gui::IDLE);
-    btnStartGame.SetColor(wi::Color(120, 50, 240, 255),  wi::gui::FOCUS);
-    btnStartGame.SetColor(wi::Color(60, 10, 160, 255),   wi::gui::ACTIVE);
+    btnStartGame.SetColor(wi::Color(90, 12, 12, 225), wi::gui::IDLE);
+    btnStartGame.SetColor(wi::Color(150, 20, 20, 255), wi::gui::FOCUS);
+    btnStartGame.SetColor(wi::Color(60, 6,  6, 255),  wi::gui::ACTIVE);
     btnStartGame.font.params.size = 20;
     btnStartGame.font.params.h_align = wi::font::WIFALIGN_CENTER;
     btnStartGame.font.params.v_align = wi::font::WIFALIGN_CENTER;
+    btnStartGame.font.params.color = wi::Color(220, 90, 80, 235);
     btnStartGame.SetEnabled(false);
     btnStartGame.OnClick([this](wi::gui::EventArgs)
     {
@@ -191,14 +197,15 @@ void LobbyState::Load()
 
     
     btnDisconnect.Create("BtnDisconnect");
-    btnDisconnect.SetText("DISCONNECT");
+    btnDisconnect.SetText("ОТКЛЮЧИТЬСЯ");
     btnDisconnect.SetSize(XMFLOAT2(180, 40));
-    btnDisconnect.SetColor(wi::Color(100, 20, 20, 200),  wi::gui::IDLE);
-    btnDisconnect.SetColor(wi::Color(160, 40, 40, 240),   wi::gui::FOCUS);
-    btnDisconnect.SetColor(wi::Color(70, 10, 10, 255),    wi::gui::ACTIVE);
+    btnDisconnect.SetColor(wi::Color(60, 10, 10, 200), wi::gui::IDLE);
+    btnDisconnect.SetColor(wi::Color(110, 20, 20, 240), wi::gui::FOCUS);
+    btnDisconnect.SetColor(wi::Color(38, 4,  4, 255),  wi::gui::ACTIVE);
     btnDisconnect.font.params.size = 16;
     btnDisconnect.font.params.h_align = wi::font::WIFALIGN_CENTER;
     btnDisconnect.font.params.v_align = wi::font::WIFALIGN_CENTER;
+    btnDisconnect.font.params.color = wi::Color(190, 80, 80, 220);
     btnDisconnect.OnClick([this](wi::gui::EventArgs)
     {
         net::NetManager::Get().Disconnect("User disconnected");
@@ -267,29 +274,28 @@ void LobbyState::ResizeLayout()
 
 void LobbyState::Compose(wi::graphics::CommandList cmd) const
 {
-    
-    {
-        wi::image::Params bg;
-        bg.enableFullScreen();
-        bg.color = XMFLOAT4(0.03f, 0.02f, 0.08f, 1.0f);
-        wi::image::Draw(nullptr, bg, cmd);
-    }
-
     float W = GetLogicalWidth();
     float H = GetLogicalHeight();
     float cx = W * 0.5f;
 
-    
     {
+        float pulse = 0.5f + 0.5f * std::sin(time * 0.5f);
+        wi::image::Params bg;
+        bg.enableFullScreen();
+        bg.color = XMFLOAT4(0.022f + 0.016f * pulse, 0.004f, 0.006f, 1.0f);
+        wi::image::Draw(nullptr, bg, cmd);
+    }
+
+    {
+        float pulse = 0.5f + 0.5f * std::sin(time * 0.7f);
         wi::image::Params glow;
         float gw = W * 0.7f, gh = H * 0.8f;
         glow.pos   = XMFLOAT3((W - gw) * 0.5f, H * 0.08f, 0.0f);
         glow.siz   = XMFLOAT2(gw, gh);
-        glow.color = XMFLOAT4(0.10f, 0.04f, 0.35f, 0.12f);
+        glow.color = XMFLOAT4(0.28f + 0.08f * pulse, 0.02f, 0.01f, 0.10f);
         wi::image::Draw(nullptr, glow, cmd);
     }
 
-    
     {
         wi::font::Params fp;
         fp.posX    = cx;
@@ -297,14 +303,13 @@ void LobbyState::Compose(wi::graphics::CommandList cmd) const
         fp.size    = 38;
         fp.h_align = wi::font::WIFALIGN_CENTER;
         fp.v_align = wi::font::WIFALIGN_CENTER;
-        fp.color   = wi::Color(200, 180, 255, 240);
-        fp.shadowColor    = wi::Color(80, 20, 180, 160);
+        fp.color   = wi::Color(210, 40, 30, 240);
+        fp.shadowColor    = wi::Color(70, 0, 0, 170);
         fp.shadow_offset_x = 3.0f;
         fp.shadow_offset_y = 3.0f;
-        wi::font::Draw("MULTIPLAYER", fp, cmd);
+        wi::font::Draw("МУЛЬТИПЛЕЕР", fp, cmd);
     }
 
-    
     auto drawHeader = [&](const char* label, float x, float y)
     {
         wi::font::Params h;
@@ -313,23 +318,21 @@ void LobbyState::Compose(wi::graphics::CommandList cmd) const
         h.size    = 14;
         h.h_align = wi::font::WIFALIGN_LEFT;
         h.v_align = wi::font::WIFALIGN_CENTER;
-        h.color   = wi::Color(140, 120, 200, 220);
+        h.color   = wi::Color(190, 90, 70, 220);
         wi::font::Draw(label, h, cmd);
     };
     float startY = H * 0.20f + ROW_H + 4.0f;
-    drawHeader("HOST A SERVER",  cx - 320.0f, startY);
-    drawHeader("JOIN A SERVER",  cx + 20.0f,  startY);
+    drawHeader("СОЗДАТЬ СЕРВЕР",  cx - 320.0f, startY);
+    drawHeader("ПОДКЛЮЧИТЬСЯ",    cx + 20.0f,  startY);
 
-    
     {
         wi::image::Params div;
         div.pos   = XMFLOAT3(cx - 1.0f, H * 0.18f, 0.0f);
         div.siz   = XMFLOAT2(2.0f, H * 0.55f);
-        div.color = XMFLOAT4(0.3f, 0.1f, 0.6f, 0.4f);
+        div.color = XMFLOAT4(0.5f, 0.1f, 0.08f, 0.4f);
         wi::image::Draw(nullptr, div, cmd);
     }
 
-    
     {
         wi::font::Params lp;
         lp.posX    = cx - 220.0f;
@@ -337,12 +340,11 @@ void LobbyState::Compose(wi::graphics::CommandList cmd) const
         lp.size    = 13;
         lp.h_align = wi::font::WIFALIGN_LEFT;
         lp.v_align = wi::font::WIFALIGN_TOP;
-        lp.color   = wi::Color(150, 180, 150, 200);
+        lp.color   = wi::Color(180, 120, 90, 200);
         lp.h_wrap  = 440.0f;
         wi::font::Draw(statusLog, lp, cmd);
     }
 
-    
     if (net::NetManager::Get().IsConnected() || net::NetManager::Get().IsHosting())
     {
         std::string pingStr = "Ping: " + std::to_string(net::NetManager::Get().GetPing()) + " ms";
@@ -352,8 +354,18 @@ void LobbyState::Compose(wi::graphics::CommandList cmd) const
         pp.size    = 13;
         pp.h_align = wi::font::WIFALIGN_RIGHT;
         pp.v_align = wi::font::WIFALIGN_CENTER;
-        pp.color   = wi::Color(150, 220, 150, 200);
+        pp.color   = wi::Color(200, 120, 90, 200);
         wi::font::Draw(pingStr, pp, cmd);
+    }
+
+    {
+        float vh = H * 0.13f;
+        wi::image::Params v;
+        v.pos = XMFLOAT3(0, 0, 0); v.siz = XMFLOAT2(W, vh);
+        v.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.55f);
+        wi::image::Draw(nullptr, v, cmd);
+        v.pos = XMFLOAT3(0, H - vh, 0);
+        wi::image::Draw(nullptr, v, cmd);
     }
 
     wi::RenderPath2D::Compose(cmd);

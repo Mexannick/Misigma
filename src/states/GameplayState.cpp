@@ -46,15 +46,16 @@ void GameplayState::Load()
     wi::renderer::ClearWorld(GetScene());
 
     WeatherComponent& weather = GetScene().weather;
-    weather.ambient       = XMFLOAT3(0.18f, 0.04f, 0.02f);
-    weather.sunColor      = XMFLOAT3(0.85f, 0.18f, 0.04f);
-    weather.sunDirection  = XMFLOAT3(0.3f, 0.55f, 0.25f);
-    weather.fogStart      = 30.0f;
-    weather.fogDensity    = 0.010f;
-    weather.skyExposure   = 0.35f;
+    weather.ambient       = XMFLOAT3(0.22f, 0.12f, 0.07f);
+    weather.sunColor      = XMFLOAT3(0.95f, 0.42f, 0.18f);
+    weather.sunDirection  = XMFLOAT3(0.32f, 0.42f, 0.28f);
+    weather.fogStart      = 18.0f;
+    weather.fogDensity    = 0.018f;
+    weather.skyExposure   = 0.5f;
 
-    weather.zenith        = XMFLOAT3(0.04f, 0.01f, 0.01f);
-    weather.horizon       = XMFLOAT3(0.28f, 0.06f, 0.02f);
+    weather.zenith        = XMFLOAT3(0.10f, 0.02f, 0.015f);
+    weather.horizon       = XMFLOAT3(0.55f, 0.20f, 0.09f);
+    weather.SetHeightFog(false);
 
     SetupGround();
     SpawnMonolith();
@@ -130,7 +131,51 @@ void GameplayState::Load()
     gui.AddWidget(&btnQuit);
 
     wi::RenderPath3D::Load();
+
+    SetupPostprocess();
+
     CaptureMouseCursor(true);
+}
+
+void GameplayState::SetupPostprocess()
+{
+    custom_post_processes.clear();
+
+    if (!postFxLoaded)
+    {
+        postFxLoaded = wi::renderer::LoadShader(
+            wi::graphics::ShaderStage::CS, marsGradeCS, "marsgradeCS.cso");
+    }
+
+    if (postFxLoaded && marsGradeCS.IsValid())
+    {
+        CustomPostprocess pp;
+        pp.name          = "MarsGrade";
+        pp.computeshader = marsGradeCS;
+        pp.stage         = CustomPostprocess::Stage::AfterTonemap;
+        pp.params0       = XMFLOAT4(0.0f, 0.9f, 0.05f, 0.7f);
+        pp.params1       = XMFLOAT4(0.5f, 0.10f, 0.04f, 0.0f);
+        custom_post_processes.push_back(pp);
+    }
+}
+
+void GameplayState::UpdatePostprocess()
+{
+    if (custom_post_processes.empty())
+        return;
+
+    float pulse = 0.5f + 0.3f * std::sin(skyTime * 0.55f)
+                       + 0.2f * std::sin(skyTime * 1.1f + 1.2f);
+    pulse = std::max(0.0f, std::min(1.0f, pulse));
+
+    float dread = teleportBlackout > 0.0f
+        ? std::min(1.0f, teleportBlackout / 0.15f) * 0.6f
+        : 0.0f;
+
+    CustomPostprocess& pp = custom_post_processes[0];
+    pp.params0.x = skyTime;
+    pp.params1.x = pulse;
+    pp.params1.w = dread;
 }
 
 void GameplayState::SetupGround()
@@ -143,9 +188,9 @@ void GameplayState::SetupGround()
     terrain.terrainEntity = terrainEntity;
     terrain.scene = &scene;
 
-    terrain.chunk_scale = 2.0f;
-    terrain.bottomLevel = -15.0f;
-    terrain.topLevel = 35.0f;
+    terrain.chunk_scale = 2.5f;
+    terrain.bottomLevel = -10.0f;
+    terrain.topLevel = 26.0f;
     terrain.seed = 4242;
 
     terrain.SetCenterToCamEnabled(true);
@@ -165,58 +210,58 @@ void GameplayState::SetupGround()
         switch (i)
         {
         case wi::terrain::MATERIAL_BASE:
-            mat.baseColor = XMFLOAT4(0.32f, 0.10f, 0.05f, 1.0f);
-            mat.textures[MaterialComponent::BASECOLORMAP].name = "Content/terrain/darkrock.jpg";
-            mat.textures[MaterialComponent::NORMALMAP].name = "Content/terrain/darkrock_nor.jpg";
-            mat.roughness = 0.95f;
-            mat.metalness = 0.0f;
-            break;
-        case wi::terrain::MATERIAL_SLOPE:
-            mat.baseColor = XMFLOAT4(0.18f, 0.06f, 0.03f, 1.0f);
-            mat.textures[MaterialComponent::BASECOLORMAP].name = "Content/terrain/rock.jpg";
-            mat.textures[MaterialComponent::NORMALMAP].name = "Content/terrain/rock_nor.jpg";
-            mat.roughness = 0.9f;
-            mat.metalness = 0.0f;
-            break;
-        case wi::terrain::MATERIAL_LOW_ALTITUDE:
-            mat.baseColor = XMFLOAT4(0.12f, 0.04f, 0.02f, 1.0f);
+            mat.baseColor = XMFLOAT4(0.60f, 0.32f, 0.17f, 1.0f);
             mat.textures[MaterialComponent::BASECOLORMAP].name = "Content/terrain/ground2.jpg";
             mat.textures[MaterialComponent::NORMALMAP].name = "Content/terrain/ground2_nor.jpg";
             mat.roughness = 1.0f;
             mat.metalness = 0.0f;
             break;
-        case wi::terrain::MATERIAL_HIGH_ALTITUDE:
-            mat.baseColor = XMFLOAT4(0.24f, 0.08f, 0.04f, 1.0f);
-            mat.textures[MaterialComponent::BASECOLORMAP].name = "Content/terrain/slope.jpg";
-            mat.textures[MaterialComponent::NORMALMAP].name = "Content/terrain/slope_nor.jpg";
+        case wi::terrain::MATERIAL_SLOPE:
+            mat.baseColor = XMFLOAT4(0.34f, 0.18f, 0.11f, 1.0f);
+            mat.textures[MaterialComponent::BASECOLORMAP].name = "Content/terrain/rock.jpg";
+            mat.textures[MaterialComponent::NORMALMAP].name = "Content/terrain/rock_nor.jpg";
+            mat.roughness = 0.92f;
+            mat.metalness = 0.0f;
+            break;
+        case wi::terrain::MATERIAL_LOW_ALTITUDE:
+            mat.baseColor = XMFLOAT4(0.68f, 0.40f, 0.23f, 1.0f);
+            mat.textures[MaterialComponent::BASECOLORMAP].name = "Content/terrain/ground.jpg";
+            mat.textures[MaterialComponent::NORMALMAP].name = "Content/terrain/ground_nor.jpg";
             mat.roughness = 1.0f;
+            mat.metalness = 0.0f;
+            break;
+        case wi::terrain::MATERIAL_HIGH_ALTITUDE:
+            mat.baseColor = XMFLOAT4(0.46f, 0.25f, 0.16f, 1.0f);
+            mat.textures[MaterialComponent::BASECOLORMAP].name = "Content/terrain/darkrock.jpg";
+            mat.textures[MaterialComponent::NORMALMAP].name = "Content/terrain/darkrock_nor.jpg";
+            mat.roughness = 0.95f;
             mat.metalness = 0.0f;
             break;
         }
         mat.SetTextureStreamingDisabled();
     }
 
-    auto perlin = wi::allocator::make_shared<wi::terrain::PerlinModifier>();
-    perlin->SetScale(600.0f);
-    perlin->weight = 0.6f;
-    perlin->octaves = 4;
-    perlin->blend = wi::terrain::Modifier::BlendMode::Normal;
-    terrain.modifiers.push_back(perlin);
+    auto dunes = wi::allocator::make_shared<wi::terrain::PerlinModifier>();
+    dunes->SetScale(900.0f);
+    dunes->weight = 0.5f;
+    dunes->octaves = 5;
+    dunes->blend = wi::terrain::Modifier::BlendMode::Normal;
+    terrain.modifiers.push_back(dunes);
 
-    auto voronoi = wi::allocator::make_shared<wi::terrain::VoronoiModifier>();
-    voronoi->SetScale(150.0f);
-    voronoi->weight = 0.4f;
-    voronoi->blend = wi::terrain::Modifier::BlendMode::Additive;
-    voronoi->falloff = 2.0f;
-    voronoi->fade = 1.5f;
-    terrain.modifiers.push_back(voronoi);
+    auto mesas = wi::allocator::make_shared<wi::terrain::VoronoiModifier>();
+    mesas->SetScale(260.0f);
+    mesas->weight = 0.45f;
+    mesas->blend = wi::terrain::Modifier::BlendMode::Additive;
+    mesas->falloff = 2.5f;
+    mesas->fade = 1.2f;
+    terrain.modifiers.push_back(mesas);
 
-    auto bumps = wi::allocator::make_shared<wi::terrain::PerlinModifier>();
-    bumps->SetScale(15.0f);
-    bumps->weight = 0.15f;
-    bumps->octaves = 2;
-    bumps->blend = wi::terrain::Modifier::BlendMode::Additive;
-    terrain.modifiers.push_back(bumps);
+    auto ripples = wi::allocator::make_shared<wi::terrain::PerlinModifier>();
+    ripples->SetScale(18.0f);
+    ripples->weight = 0.10f;
+    ripples->octaves = 2;
+    ripples->blend = wi::terrain::Modifier::BlendMode::Additive;
+    terrain.modifiers.push_back(ripples);
 
     terrain.Generation_Restart();
 }
@@ -465,13 +510,13 @@ void GameplayState::UpdateSkyPulse(float dt)
 
     WeatherComponent& weather = GetScene().weather;
     weather.horizon = XMFLOAT3(
-        0.22f + 0.14f * pulse,
-        0.04f + 0.02f * pulse,
-        0.01f);
+        0.46f + 0.22f * pulse,
+        0.17f + 0.08f * pulse,
+        0.07f);
     weather.zenith = XMFLOAT3(
-        0.03f + 0.03f * pulse,
-        0.005f,
-        0.005f);
+        0.10f + 0.11f * pulse,
+        0.02f + 0.015f * pulse,
+        0.02f);
 }
 
 void GameplayState::CheckTeleportBoundary(float dt)
@@ -549,6 +594,7 @@ void GameplayState::Update(float dt)
     }
 
     UpdateSkyPulse(dt);
+    UpdatePostprocess();
 
     ProcessNetworkPackets();
 

@@ -51,11 +51,10 @@ void LoadingState::Compose(wi::graphics::CommandList cmd) const
     {
         wi::image::Params bg;
         bg.enableFullScreen();
-        bg.color = XMFLOAT4(0.04f, 0.04f, 0.06f, 1.0f); 
+        bg.color = XMFLOAT4(0.02f, 0.005f, 0.006f, 1.0f);
         wi::image::Draw(nullptr, bg, cmd);
     }
 
-    
     {
         wi::font::Params fp;
         fp.posX            = GetLogicalWidth()  * 0.5f;
@@ -63,14 +62,13 @@ void LoadingState::Compose(wi::graphics::CommandList cmd) const
         fp.size            = 52;
         fp.h_align         = wi::font::WIFALIGN_CENTER;
         fp.v_align         = wi::font::WIFALIGN_CENTER;
-        fp.color           = wi::Color(220, 200, 255, 240);
-        fp.shadowColor     = wi::Color(80, 20, 180, 180);
+        fp.color           = wi::Color(200, 40, 30, 240);
+        fp.shadowColor     = wi::Color(70, 0, 0, 180);
         fp.shadow_offset_x = 3.0f;
         fp.shadow_offset_y = 3.0f;
         wi::font::Draw("MISIGMA", fp, cmd);
     }
 
-    
     {
         wi::font::Params sub;
         sub.posX    = GetLogicalWidth()  * 0.5f;
@@ -78,27 +76,25 @@ void LoadingState::Compose(wi::graphics::CommandList cmd) const
         sub.size    = 16;
         sub.h_align = wi::font::WIFALIGN_CENTER;
         sub.v_align = wi::font::WIFALIGN_CENTER;
-        sub.color   = wi::Color(180, 170, 210, 200);
+        sub.color   = wi::Color(150, 60, 50, 200);
         wi::font::Draw("Loading...", sub, cmd);
     }
 
-    
     {
         wi::image::Params track;
         track.pos   = XMFLOAT3(barX, barY, 0.0f);
         track.siz   = XMFLOAT2(barW, barH);
-        track.color = XMFLOAT4(0.15f, 0.12f, 0.22f, 1.0f);
+        track.color = XMFLOAT4(0.14f, 0.04f, 0.03f, 1.0f);
         wi::image::Draw(nullptr, track, cmd);
     }
 
-    
     float progress = static_cast<float>(getProgress()) / 100.0f;
     if (progress > 0.0f)
     {
         wi::image::Params fill;
         fill.pos   = XMFLOAT3(barX, barY, 0.0f);
         fill.siz   = XMFLOAT2(barW * progress, barH);
-        fill.color = XMFLOAT4(0.55f, 0.20f, 1.0f, 1.0f); 
+        fill.color = XMFLOAT4(0.7f, 0.12f, 0.06f, 1.0f);
         wi::image::Draw(nullptr, fill, cmd);
     }
 

@@ -187,10 +187,10 @@ void MainMenuState::Compose(wi::graphics::CommandList cmd) const
 
     
     {
-        float pulse = 0.5f + 0.5f * std::sin(time * 0.55f);  
-        float rVal  = 0.06f + 0.04f * pulse;                  
-        float gVal  = 0.005f;
-        float bVal  = 0.005f;
+        float pulse = 0.5f + 0.5f * std::sin(time * 0.5f);
+        float rVal  = 0.022f + 0.018f * pulse;
+        float gVal  = 0.004f;
+        float bVal  = 0.006f;
 
         wi::image::Params bg;
         bg.enableFullScreen();
@@ -219,8 +219,8 @@ void MainMenuState::Compose(wi::graphics::CommandList cmd) const
         wi::image::Params glow;
         glow.pos   = XMFLOAT3((W - gw) * 0.5f, H * 0.08f, 0);
         glow.siz   = XMFLOAT2(gw, gh);
-        glow.color = XMFLOAT4(0.35f + 0.1f * pulse, 0.01f, 0.01f,
-                               0.12f * logoAlpha);
+        glow.color = XMFLOAT4(0.26f + 0.08f * pulse, 0.01f, 0.01f,
+                               0.09f * logoAlpha);
         wi::image::Draw(nullptr, glow, cmd);
     }
 
@@ -269,30 +269,49 @@ void MainMenuState::Compose(wi::graphics::CommandList cmd) const
         wi::font::Params sub;
         sub.posX    = W * 0.5f;
         sub.posY    = H * 0.36f;
-        sub.size    = 14;
+        sub.size    = 15;
         sub.h_align = wi::font::WIFALIGN_CENTER;
         sub.v_align = wi::font::WIFALIGN_CENTER;
-        sub.color   = wi::Color(160, 30, 30, a);
-        wi::font::Draw("alpha...", sub, cmd);
+        sub.color   = wi::Color(150, 35, 30, a);
+        sub.spacingX = 6.0f;
+        wi::font::Draw("Alpa", sub, cmd);
     }
 
     
     
     {
-        float vh = H * 0.18f;
+        float vh = H * 0.28f;
         wi::image::Params v;
         v.pos   = XMFLOAT3(0, 0, 0);
         v.siz   = XMFLOAT2(W, vh);
-        v.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.55f);
+        v.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.78f);
         wi::image::Draw(nullptr, v, cmd);
     }
-    
+
     {
-        float vh = H * 0.18f;
+        float vh = H * 0.28f;
         wi::image::Params v;
         v.pos   = XMFLOAT3(0, H - vh, 0);
         v.siz   = XMFLOAT2(W, vh);
-        v.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.55f);
+        v.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.78f);
+        wi::image::Draw(nullptr, v, cmd);
+    }
+
+    {
+        float vw = W * 0.16f;
+        wi::image::Params v;
+        v.pos   = XMFLOAT3(0, 0, 0);
+        v.siz   = XMFLOAT2(vw, H);
+        v.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.6f);
+        wi::image::Draw(nullptr, v, cmd);
+    }
+
+    {
+        float vw = W * 0.16f;
+        wi::image::Params v;
+        v.pos   = XMFLOAT3(W - vw, 0, 0);
+        v.siz   = XMFLOAT2(vw, H);
+        v.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.6f);
         wi::image::Draw(nullptr, v, cmd);
     }
 
